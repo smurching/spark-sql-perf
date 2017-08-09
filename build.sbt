@@ -72,6 +72,19 @@ runBenchmark := {
     streams.value.log)
 }
 
+
+val runMLBenchmark = inputKey[Unit]("runs an ML benchmark")
+
+runMLBenchmark := {
+  import complete.DefaultParsers._
+  val args = spaceDelimited("[args]").parsed
+  val scalaRun = (runner in run).value
+  val classpath = (fullClasspath in Compile).value
+  scalaRun.run("com.databricks.spark.sql.perf.mllib.MLLib", classpath.map(_.data), args,
+    streams.value.log)
+}
+
+
 import ReleaseTransformations._
 
 /** Push to the team directory instead of the user's homedir for releases. */

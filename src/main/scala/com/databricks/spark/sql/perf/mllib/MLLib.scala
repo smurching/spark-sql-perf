@@ -1,12 +1,9 @@
 package com.databricks.spark.sql.perf.mllib
 
 import scala.language.implicitConversions
-
 import com.databricks.spark.sql.perf._
-
 import com.typesafe.scalalogging.slf4j.{LazyLogging => Logging}
-
-import org.apache.spark.SparkContext
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{DataFrame, SQLContext}
 
 
@@ -34,6 +31,31 @@ object MLLib extends Logging {
     e.getCurrentResults()
   }
 
+  def main(args: Array[String]): Unit = {
+    val config = """
+                   |output: /databricks/spark/sql/mllib-perf-test
+                   |timeoutSeconds: 10000
+                   |common:
+                   |  numPartitions: 100
+                   |  randomSeed: [1,1,1,1,1,1,1] # Rerun 7 times to accumulate some info
+                   |benchmarks:
+                   |  - name: classification.LogisticRegression
+                   |    params:
+                   |      maxIter: 20
+                   |      # It takes a very long time if set to 10000
+                   |      # numFeatures: 3000
+                   |      # numExamples: 1000000
+                   |      # numTestExamples: 1000000
+                   |      numFeatures: 30
+                   |      numExamples: 100
+                   |      numTestExamples: 100
+                   |      numPartitions: 128
+                   |      regParam: 0.01
+                   |      tol: 0.0
+    """.stripMargin
+    run(yamlConfig = config)
+  }
+
   /**
    * Runs all the experiments and blocks on completion
    *
@@ -46,7 +68,11 @@ object MLLib extends Logging {
       require(yamlConfig != null)
       YamlConfig.readString(yamlConfig)
     }
-    val sc = SparkContext.getOrCreate()
+
+    val sparkconf = new SparkConf()
+      .setMaster("local[2]")
+      .setAppName("MLbenchmark")
+    val sc = new SparkContext(sparkconf)
     sc.setLogLevel("INFO")
     val b = new com.databricks.spark.sql.perf.mllib.MLLib()
     val sqlContext = com.databricks.spark.sql.perf.mllib.MLBenchmarks.sqlContext
