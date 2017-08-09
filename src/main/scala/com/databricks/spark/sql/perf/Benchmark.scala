@@ -107,7 +107,7 @@ abstract class Benchmark(
       resultLocation: String = resultsLocation,
       forkThread: Boolean = true) = {
 
-    new ExperimentSatus(executionsToRun, includeBreakdown, iterations, variations, tags,
+    new ExperimentStatus(executionsToRun, includeBreakdown, iterations, variations, tags,
       timeout, resultLocation, sqlContext, allTables, currentConfiguration, forkThread = forkThread)
   }
 
@@ -296,7 +296,7 @@ object Benchmark {
       resultsLocation: String,
       sqlContext: SQLContext,
       allTables: Seq[Table],
-      currentConfigturation: BenchmarkConfiguration,
+      currentConfiguration: BenchmarkConfiguration,
       forkThread: Boolean = true) {
     val currentResults = new collection.mutable.ArrayBuffer[BenchmarkResult]()
     val currentRuns = new collection.mutable.ArrayBuffer[ExperimentRun]()
