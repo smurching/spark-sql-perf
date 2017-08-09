@@ -107,7 +107,7 @@ abstract class Benchmark(
       resultLocation: String = resultsLocation,
       forkThread: Boolean = true) = {
 
-    new ExperimentStatus(executionsToRun, includeBreakdown, iterations, variations, tags,
+    new ExperimentSatus(executionsToRun, includeBreakdown, iterations, variations, tags,
       timeout, resultLocation, sqlContext, allTables, currentConfiguration, forkThread = forkThread)
   }
 
@@ -296,7 +296,7 @@ object Benchmark {
       resultsLocation: String,
       sqlContext: SQLContext,
       allTables: Seq[Table],
-      currentConfiguration: BenchmarkConfiguration,
+      currentConfigturation: BenchmarkConfiguration,
       forkThread: Boolean = true) {
     val currentResults = new collection.mutable.ArrayBuffer[BenchmarkResult]()
     val currentRuns = new collection.mutable.ArrayBuffer[ExperimentRun]()
@@ -334,7 +334,7 @@ object Benchmark {
         .flatMap { query =>
           try {
             query.newDataFrame().queryExecution.logical.collect {
-              case UnresolvedRelation(t, _) => t.table
+              case UnresolvedRelation(t) => t.table
             }
           } catch {
             // ignore the queries that can't be parsed
