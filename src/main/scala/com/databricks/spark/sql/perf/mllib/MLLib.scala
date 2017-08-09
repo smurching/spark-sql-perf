@@ -43,12 +43,9 @@ object MLLib extends Logging {
                    |    params:
                    |      maxIter: 20
                    |      # It takes a very long time if set to 10000
-                   |      # numFeatures: 3000
-                   |      # numExamples: 1000000
-                   |      # numTestExamples: 1000000
-                   |      numFeatures: 30
-                   |      numExamples: 100
-                   |      numTestExamples: 100
+                   |      numFeatures: 3000
+                   |      numExamples: 100000
+                   |      numTestExamples: 10000
                    |      numPartitions: 128
                    |      regParam: 0.01
                    |      tol: 0.0

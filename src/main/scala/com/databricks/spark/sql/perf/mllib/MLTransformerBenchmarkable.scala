@@ -28,12 +28,15 @@ class MLTransformerBenchmarkable(
   override protected def beforeBenchmark(): Unit = {
     logger.info(s"$this beforeBenchmark")
     try {
-      testData = test.testDataSet(param)
-      testData.cache()
-      testDataCount = Some(testData.count())
-      trainingData = test.trainingDataSet(param)
-      trainingData.cache()
-      trainingData.count()
+      val (dataGenTime, _) = measureTime {
+        testData = test.testDataSet(param)
+        testData.cache()
+        testDataCount = Some(testData.count())
+        trainingData = test.trainingDataSet(param)
+        trainingData.cache()
+        trainingData.count()
+      }
+      logger.info(s"@sid.murching beforeBenchmark: generated data in ${dataGenTime.toMillis / 1000.0} s")
     } catch {
       case e: Throwable =>
         println(s"$this error in beforeBenchmark: ${e.getStackTraceString}")
@@ -52,12 +55,16 @@ class MLTransformerBenchmarkable(
         estimator.fit(trainingData)
       }
       logger.info(s"model: $model")
-      val (_, scoreTraining) = measureTime {
+      val (scoreTrainTime, scoreTraining) = measureTime {
         test.score(param, trainingData, model)
       }
       val (scoreTestTime, scoreTest) = measureTime {
         test.score(param, testData, model)
       }
+
+      logger.info(s"@sid.murching doBenchmark: Trained model in ${trainingTime.toMillis / 1000.0} s, " +
+        s"Scored training dataset in ${scoreTrainTime.toMillis / 1000.0} s," +
+        s" test dataset in ${scoreTestTime.toMillis / 1000.0} s")
 
 
       val ml = MLResult(
