@@ -66,11 +66,7 @@ object MLLib extends Logging {
       YamlConfig.readString(yamlConfig)
     }
 
-    val sparkconf = new SparkConf()
-      .setMaster("local[2]")
-      .setAppName("MLbenchmark")
-    val sc = new SparkContext(sparkconf)
-    // val sc = SparkContext.getOrCreate()
+    val sc = SparkContext.getOrCreate()
     sc.setLogLevel("INFO")
     val b = new com.databricks.spark.sql.perf.mllib.MLLib()
     val sqlContext = com.databricks.spark.sql.perf.mllib.MLBenchmarks.sqlContext

@@ -36,7 +36,6 @@ class MLTransformerBenchmarkable(
         trainingData.cache()
         trainingData.count()
       }
-      logger.info(s"@sid.murching beforeBenchmark: generated data in ${dataGenTime.toMillis / 1000.0} s")
     } catch {
       case e: Throwable =>
         println(s"$this error in beforeBenchmark: ${e.getStackTraceString}")
@@ -62,10 +61,9 @@ class MLTransformerBenchmarkable(
         test.score(param, testData, model)
       }
 
-      logger.info(s"@sid.murching doBenchmark: Trained model in ${trainingTime.toMillis / 1000.0} s, " +
+      logger.info(s"$this doBenchmark: Trained model in ${trainingTime.toMillis / 1000.0} s, " +
         s"Scored training dataset in ${scoreTrainTime.toMillis / 1000.0} s," +
         s" test dataset in ${scoreTestTime.toMillis / 1000.0} s")
-
 
       val ml = MLResult(
         trainingTime = Some(trainingTime.toMillis),
