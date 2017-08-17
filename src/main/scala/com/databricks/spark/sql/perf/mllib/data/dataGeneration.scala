@@ -105,6 +105,25 @@ object DataGenerator {
   }
 }
 
+/**
+ * Generator that outputs "sentences" (arrays of strings) of length [[sentenceLength]]
+ * randomly sampled from [[dictionary]].
+ */
+class SentenceGenerator(val dictionary: Array[String], val sentenceLength: Int)
+  extends RandomDataGenerator[Array[String]] {
+
+  private val rng = new java.util.Random()
+
+  override def nextValue(): Array[String] = {
+    Array.tabulate[String](sentenceLength)(_ => dictionary(rng.nextInt(dictionary.length)))
+  }
+
+  override def setSeed(seed: Long): Unit = {
+    rng.setSeed(seed)
+  }
+
+  override def copy(): SentenceGenerator = new SentenceGenerator(dictionary, sentenceLength)
+}
 
 /**
  * Generator for a feature vector which can include a mix of categorical and continuous features.

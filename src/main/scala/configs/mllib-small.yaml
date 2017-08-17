@@ -30,6 +30,12 @@ benchmarks:
       numTestExamples: 10
       k: 5
       maxIter: 10
+  - name: clustering.GaussianMixture
+    params:
+      numExamples: 10
+      numTestExamples: 10
+      k: 5
+      maxIter: 10
   - name: regression.GLMRegression
     params:
       numExamples: 100
@@ -40,6 +46,20 @@ benchmarks:
       tol: 0.0
       maxIter: 10
       regParam: 0.1
+  - name: regression.DecisionTreeRegression
+    params:
+      numExamples: 100
+      numTestExamples: 10
+      depth: 3
+      numFeatures: 5
+      maxIter: 3
+  - name: regression.RandomForestRegression
+    params:
+      numExamples: 100
+      numTestExamples: 10
+      depth: 3
+      numFeatures: 5
+      maxIter: 3
   - name: classification.DecisionTreeClassification
     params:
       numExamples: 100
@@ -63,6 +83,21 @@ benchmarks:
       numClasses: 2
       numFeatures: 5
       maxIter: 3
+  - name: classification.NaiveBayes
+    params:
+      numExamples: 100
+      naiveBayesSmoothing: 1.0
+      numClasses: 10
+      numFeatures: [10]
+  - name: regression.LinearRegression
+    params:
+      numExamples: 100
+      numTestExamples: 100
+      numFeatures: 100
+      regParam: 0.1
+      tol: [0.0]
+      maxIter: 10
+      numFeatures: [10]
   - name: regression.LinearRegression
     params:
       numExamples: 100
@@ -84,9 +119,8 @@ benchmarks:
     params:
       numExamples: 100
       bucketizerNumBuckets: 10
-  - name: classification.NaiveBayes
+  - name: feature.HashingTF
     params:
       numExamples: 100
-      naiveBayesSmoothing: 1.0
-      numClasses: 10
-      numFeatures: [10]
+      hashingTFSentenceLength: 10
+      hashingTFNumFeatures: 5
