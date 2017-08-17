@@ -117,6 +117,8 @@ case class MLParams(
     depth: Option[Int] = None,
     elasticNetParam: Option[Double] = None,
     family: Option[String] = None,
+    hashingTFNumFeatures: Option[Int] = None,
+    hashingTFMaxSentenceLength: Option[Int] = None,
     k: Option[Int] = None,
     ldaDocLength: Option[Int] = None,
     ldaNumVocabulary: Option[Int] = None,
