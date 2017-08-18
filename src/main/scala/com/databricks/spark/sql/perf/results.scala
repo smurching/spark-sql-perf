@@ -115,13 +115,11 @@ case class MLParams(
     // *** Specialized and sorted by name ***
     bucketizerNumBuckets: Option[Int] = None,
     depth: Option[Int] = None,
+    docLength: Option[Int] = None,
     elasticNetParam: Option[Double] = None,
     family: Option[String] = None,
-    hashingTFNumFeatures: Option[Int] = None,
-    hashingTFSentenceLength: Option[Int] = None,
+    featurizerNumFeatures: Option[Int] = None, // # of output features produced by featurizers
     k: Option[Int] = None,
-    ldaDocLength: Option[Int] = None,
-    ldaNumVocabulary: Option[Int] = None,
     link: Option[String] = None,
     maxIter: Option[Int] = None,
     naiveBayesSmoothing: Option[Double] = None,
@@ -129,6 +127,7 @@ case class MLParams(
     numFeatures: Option[Int] = None,
     numItems: Option[Int] = None,
     numUsers: Option[Int] = None,
+    numVocabulary: Option[Int] = None,
     optimizer: Option[String] = None,
     regParam: Option[Double] = None,
     rank: Option[Int] = None,

@@ -10,7 +10,7 @@ import org.apache.spark.mllib.random.RandomRDDs
 import org.apache.spark.sql._
 
 import com.databricks.spark.sql.perf.mllib.OptionImplicits._
-import com.databricks.spark.sql.perf.mllib.data.SentenceGenerator
+import com.databricks.spark.sql.perf.mllib.data.DocumentGenerator
 import com.databricks.spark.sql.perf.mllib.{BenchmarkAlgorithm, MLBenchContext, TestFromTraining}
 
 
@@ -19,16 +19,13 @@ object HashingTF extends BenchmarkAlgorithm with TestFromTraining with UnaryTran
   override def trainingDataSet(ctx: MLBenchContext): DataFrame = {
     import ctx.params._
     import ctx.sqlContext.implicits._
-    val rng = ctx.newGenerator()
-    // Load in a dictionary of ~700 words from a Sherlock Holmes novel, remove non-alphanumeric
-    // chars, then construct sentences by randomly sampling from it (to mimic sentences from a
-    // real corpus)
-    val dictionary = IOUtils.toString(this.getClass.getClassLoader
-      .getResourceAsStream(s"sherlockholmes.txt"))
-      .replaceAll("[^A-Za-z0-9]", " ").split(' ').filter(_.length > 0)
 
-    val sentenceGenerator = new SentenceGenerator(dictionary, hashingTFSentenceLength)
-    RandomRDDs.randomRDD(ctx.sqlContext.sparkContext, sentenceGenerator,
+    // To test HashingTF, we generate arrays of docLength strings, where
+    // each string is selected from a pool of numVocabulary strings
+    // The expected # of occurrences of each word in our vocabulary is
+    // (docLength * numExamples) / numVocabulary
+    val DocumentGenerator = new DocumentGenerator(numVocabulary, docLength)
+    RandomRDDs.randomRDD(ctx.sqlContext.sparkContext, DocumentGenerator,
       numExamples, numPartitions, ctx.seed()).toDF(inputCol)
   }
 
@@ -37,7 +34,7 @@ object HashingTF extends BenchmarkAlgorithm with TestFromTraining with UnaryTran
     val rng = ctx.newGenerator()
     new ml.feature.HashingTF()
       .setInputCol(inputCol)
-      .setNumFeatures(hashingTFNumFeatures)
+      .setNumFeatures(featurizerNumFeatures)
   }
 
 }

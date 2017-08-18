@@ -17,8 +17,8 @@ benchmarks:
     params:
       numExamples: 10
       numTestExamples: 10
-      ldaDocLength: 20
-      ldaNumVocabulary: 4
+      docLength: 20
+      numVocabulary: 4
       k: 5
       maxIter: 10
       optimizer:
@@ -122,5 +122,6 @@ benchmarks:
   - name: feature.HashingTF
     params:
       numExamples: 100
-      hashingTFSentenceLength: 10
-      hashingTFNumFeatures: 5
+      docLength: 20
+      numVocabulary: 4
+      featurizerNumFeatures: 5
