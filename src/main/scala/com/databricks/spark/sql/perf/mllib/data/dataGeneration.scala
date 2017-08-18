@@ -103,8 +103,73 @@ object DataGenerator {
 
     (sql.createDataFrame(trainPruned), sql.createDataFrame(finalTest))
   }
+
+  /** Generates a column of random strings. */
+  def generateRandStrings(
+    sql: SQLContext,
+    numExamples: Long,
+    seed: Long,
+    vocabSize: Int,
+    numPartitions: Int,
+    colName: String): DataFrame = {
+    val rdd: RDD[String] = RandomRDDs.randomRDD(sql.sparkContext,
+    new RandStringGenerator(vocabSize), numExamples, numPartitions, seed)
+    sql.createDataFrame(rdd.map(Tuple1.apply)).toDF(colName)
+  }
+
+  /** Generate a column of documents (arrays of strings) */
+  def generateDocuments(
+    sql: SQLContext,
+    numExamples: Long,
+    seed: Long,
+    vocabSize: Int,
+    docLength: Int,
+    numPartitions: Int,
+    colName: String): DataFrame = {
+    val rdd: RDD[Array[String]] = RandomRDDs.randomRDD(sql.sparkContext,
+      new DocumentGenerator(vocabSize, docLength), numExamples, numPartitions, seed)
+    sql.createDataFrame(rdd.map(Tuple1.apply)).toDF(colName)
+  }
 }
 
+/**
+ * Samples random strings from a vocabulary of [[vocabSize]] strings.
+ */
+class RandStringGenerator(val vocabSize: Int) extends RandomDataGenerator[String] {
+
+  private val rng = new java.util.Random()
+
+  override def nextValue(): String = {
+    // Generate a random integer in [0, vocabSize) and convert to a string
+    rng.nextInt(vocabSize).toString
+  }
+
+  override def setSeed(seed: Long): Unit = {
+    rng.setSeed(seed)
+  }
+
+  override def copy(): RandStringGenerator = new RandStringGenerator(vocabSize)
+}
+
+/**
+ * Generator that outputs "documents" (arrays of strings) of [[docLength]] words, where
+ * each word is sampled from a pool of [[vocabSize]] strings.
+ */
+class DocumentGenerator(val vocabSize: Int, val docLength: Int)
+  extends RandomDataGenerator[Array[String]] {
+
+  private val stringGenerator = new RandStringGenerator(vocabSize)
+
+  override def nextValue(): Array[String] = {
+    Array.tabulate[String](docLength)(_ => stringGenerator.nextValue())
+  }
+
+  override def setSeed(seed: Long): Unit = {
+    stringGenerator.setSeed(seed)
+  }
+
+  override def copy(): DocumentGenerator = new DocumentGenerator(vocabSize, docLength)
+}
 
 /**
  * Generator for a feature vector which can include a mix of categorical and continuous features.
